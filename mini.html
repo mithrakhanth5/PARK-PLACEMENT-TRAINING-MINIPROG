@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bank Account Simulator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>Lion & Elephant Simulator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #fdf2f8; 
-            --teal: #24bfae;
-            --teal-hover: #1f9e90;
-            --border-color: #333;
-            --text-color: #111;
+            --bg-color: #f7f9fa; 
+            --accent-majestic: #b89753; 
+            --accent-slate: #717d8c; 
+            --text-color: #1a252f;
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(184, 151, 83, 0.2);
+            --input-bg: #fff;
         }
 
         * {
@@ -23,12 +25,13 @@
 
         body {
             background-color: var(--bg-color);
-            background-image: linear-gradient(135deg, #fef5f9 0%, #fae8f0 100%);
+            background-image: radial-gradient(circle at top, #ffffff 0%, #ebeff2 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            color: var(--text-color);
         }
 
         .simulator-container {
@@ -37,30 +40,57 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            padding: 3.5rem 2rem;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 2.5rem 2rem 3.5rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(26, 37, 47, 0.1); 
+            border: 1px solid var(--glass-border);
+            border-top: 4px solid var(--accent-majestic);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .simulator-container:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.06);
+        .logo-container {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 10px 25px rgba(184, 151, 83, 0.2);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--accent-slate);
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         h1 {
-            font-size: 2.2rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.4rem;
             color: var(--text-color);
-            margin-bottom: 2.5rem;
-            font-weight: 800;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--accent-slate);
+            margin-bottom: 2.5rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
         }
 
         .input-group {
@@ -70,26 +100,27 @@
             position: relative;
         }
 
-        /* Match the specific look of the input in the image */
         input[type="number"] {
             width: 100%;
-            border: 1.5px solid #444;
-            border-radius: 8px;
-            padding: 14px 20px;
-            font-size: 1.15rem;
-            color: #333;
+            border: 1.5px solid #dcdfe3;
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-size: 1.2rem;
+            color: var(--text-color);
             outline: none;
             transition: all 0.3s ease;
-            background: #fff;
+            background: var(--input-bg);
+            text-align: center;
         }
 
         input[type="number"]::placeholder {
-            color: #888;
+            color: #a0acb8;
+            font-weight: 400;
         }
 
         input[type="number"]:focus {
-            border-color: var(--teal);
-            box-shadow: 0 0 0 4px rgba(36, 191, 174, 0.15);
+            border-color: var(--accent-majestic);
+            box-shadow: 0 0 0 5px rgba(184, 151, 83, 0.15);
         }
 
         /* Hide arrows from number input */
@@ -104,38 +135,68 @@
         }
 
         .button-group {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 1.2rem;
-            justify-content: center;
-            flex-wrap: wrap;
             width: 100%;
         }
 
+        .check-btn-wrapper {
+            grid-column: 1 / -1;
+            margin-top: 0.5rem;
+        }
+
         button {
-            background-color: var(--teal);
             color: #fff;
             border: none;
-            padding: 12px 24px;
-            font-size: 1.1rem;
+            padding: 14px 24px;
+            font-size: 1.15rem;
             font-weight: 600;
-            border-radius: 6px;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
-            gap: 6px;
-            box-shadow: 0 4px 10px rgba(36, 191, 174, 0.25);
+            justify-content: center;
+            gap: 8px;
         }
 
-        button:hover {
-            background-color: var(--teal-hover);
+        .btn-deposit {
+            background-color: var(--accent-majestic);
+            box-shadow: 0 4px 15px rgba(184, 151, 83, 0.3);
+        }
+        
+        .btn-deposit:hover {
+            background-color: #a48545;
             transform: translateY(-2px);
-            box-shadow: 0 6px 14px rgba(36, 191, 174, 0.35);
+            box-shadow: 0 6px 20px rgba(184, 151, 83, 0.4);
+        }
+
+        .btn-withdraw {
+            background-color: var(--accent-slate);
+            box-shadow: 0 4px 15px rgba(113, 125, 140, 0.3);
+        }
+        
+        .btn-withdraw:hover {
+            background-color: #5d6874;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(113, 125, 140, 0.4);
+        }
+
+        .btn-balance {
+            background-color: var(--text-color);
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(26, 37, 47, 0.3);
+        }
+
+        .btn-balance:hover {
+            background-color: #0d1319;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26, 37, 47, 0.4);
         }
 
         button:active {
             transform: translateY(1px);
-            box-shadow: 0 2px 5px rgba(36, 191, 174, 0.25);
         }
 
         /* Response displays */
@@ -143,10 +204,12 @@
             margin-top: 1.5rem;
             min-height: 24px;
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 1.05rem;
             opacity: 0;
             transform: translateY(-10px);
             transition: all 0.3s ease;
+            grid-column: 1 / -1;
+            text-align: center;
         }
 
         .status-message.show {
@@ -155,60 +218,80 @@
         }
 
         .status-message.error {
-            color: #e53e3e;
+            color: #d32f2f;
         }
 
         .status-message.success {
-            color: #38a169;
+            color: #2e7d32;
         }
 
         .balance-board {
-            margin-top: 1rem;
-            background: #fff;
-            padding: 1rem 2rem;
-            border-radius: 12px;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
-            font-size: 1.5rem;
-            font-weight: 700;
+            margin-top: 1.5rem;
+            background: #ffffff;
+            padding: 1.5rem 2rem;
+            border-radius: 16px;
+            border: 2px solid #ebf0f5;
+            box-shadow: 0 10px 30px rgba(26, 37, 47, 0.05);
+            font-size: 1.8rem;
+            font-weight: 800;
             color: var(--text-color);
             display: none;
-            animation: fadeInBody 0.4s ease forwards;
+            animation: fadeInBody 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
             transition: transform 0.2s ease;
+            text-align: center;
         }
 
         .balance-board.active {
             display: block;
         }
 
+        .balance-title {
+            font-size: 1rem;
+            color: var(--accent-slate);
+            font-weight: 600;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
         @keyframes fadeInBody {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .currency-symbol {
-            color: var(--teal);
+            color: var(--accent-majestic);
+            margin-right: 4px;
         }
     </style>
 </head>
 <body>
 
     <div class="simulator-container">
-        <h1>🏦 💰 Bank Account Simulator</h1>
+        
+        <div class="logo-container">
+            <img src="logo.png" alt="Lion & Elephant Crest">
+        </div>
+        
+        <h1>Majestic Account</h1>
+        <div class="subtitle">Lion & Elephant Suite</div>
         
         <div class="input-group">
-            <input type="number" id="accountInput" placeholder="Enter the Account" min="0" step="0.01">
+            <input type="number" id="accountInput" placeholder="Enter Amount" min="0" step="0.01">
         </div>
 
         <div class="button-group">
-            <button onclick="handleTransaction('deposit')">Deposit 😔</button>
-            <button onclick="handleTransaction('withdraw')">Withdraw 🤩</button>
-            <button onclick="checkBalance()">Check Balance 💸</button>
+            <button class="btn-deposit" onclick="handleTransaction('deposit')">🦁 Deposit</button>
+            <button class="btn-withdraw" onclick="handleTransaction('withdraw')">🐘 Withdraw</button>
+            <div class="check-btn-wrapper">
+                <button class="btn-balance" onclick="checkBalance()">👑 Check Balance</button>
+            </div>
+            <div id="statusMessage" class="status-message"></div>
         </div>
 
-        <div id="statusMessage" class="status-message"></div>
         <div id="balanceBoard" class="balance-board">
-            Current Balance: <span class="currency-symbol">$</span><span id="balanceValue">0.00</span>
+            <div class="balance-title">Current Wealth</div>
+            <span class="currency-symbol">$</span><span id="balanceValue">0.00</span>
         </div>
     </div>
 
@@ -218,11 +301,16 @@
         const statusMsg = document.getElementById('statusMessage');
         const balanceBoard = document.getElementById('balanceBoard');
         const balanceValue = document.getElementById('balanceValue');
+        
+        let msgTimeout;
 
         function displayMessage(msg, isError) {
             statusMsg.textContent = msg;
             statusMsg.className = 'status-message show ' + (isError ? 'error' : 'success');
-            setTimeout(() => {
+            
+            // Fix 1: Prevent overlapping timeouts cutting messages short
+            clearTimeout(msgTimeout);
+            msgTimeout = setTimeout(() => {
                 statusMsg.classList.remove('show');
             }, 3000);
         }
@@ -230,10 +318,11 @@
         function getAmount() {
             const val = parseFloat(inputEl.value);
             if (isNaN(val) || val <= 0) {
-                displayMessage('Please enter a valid amount.', true);
+                displayMessage('Please enter a valid positive amount.', true);
                 return null;
             }
-            return val;
+            // Fix 2: Round input to 2 decimal places to avoid floating point math weirdness
+            return Math.round(val * 100) / 100;
         }
 
         function handleTransaction(type) {
@@ -245,10 +334,11 @@
                     displayMessage('Insufficient funds!', true);
                     return;
                 }
-                currentBalance -= amount;
+                // Fix 3: Keep balance strictly 2 decimals so `amount > currentBalance` works robustly
+                currentBalance = Math.round((currentBalance - amount) * 100) / 100;
                 displayMessage(`Successfully withdrew $${amount.toFixed(2)}`, false);
             } else {
-                currentBalance += amount;
+                currentBalance = Math.round((currentBalance + amount) * 100) / 100;
                 displayMessage(`Successfully deposited $${amount.toFixed(2)}`, false);
             }
 
@@ -274,7 +364,6 @@
             updateBalanceDisplay();
             balanceBoard.classList.add('active');
             
-            // Automatically hide the balance after 3 seconds
             clearTimeout(balanceTimeout);
             balanceTimeout = setTimeout(() => {
                 balanceBoard.classList.remove('active');
