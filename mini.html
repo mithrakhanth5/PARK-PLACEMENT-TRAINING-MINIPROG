@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Account Simulator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #fdf2f8; 
+            --teal: #24bfae;
+            --teal-hover: #1f9e90;
+            --border-color: #333;
+            --text-color: #111;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: linear-gradient(135deg, #fef5f9 0%, #fae8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .simulator-container {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 3.5rem 2rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .simulator-container:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.06);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: var(--text-color);
+            margin-bottom: 2.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .input-group {
+            width: 100%;
+            max-width: 380px;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        /* Match the specific look of the input in the image */
+        input[type="number"] {
+            width: 100%;
+            border: 1.5px solid #444;
+            border-radius: 8px;
+            padding: 14px 20px;
+            font-size: 1.15rem;
+            color: #333;
+            outline: none;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        input[type="number"]::placeholder {
+            color: #888;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--teal);
+            box-shadow: 0 0 0 4px rgba(36, 191, 174, 0.15);
+        }
+
+        /* Hide arrows from number input */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1.2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        button {
+            background-color: var(--teal);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 10px rgba(36, 191, 174, 0.25);
+        }
+
+        button:hover {
+            background-color: var(--teal-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(36, 191, 174, 0.35);
+        }
+
+        button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 5px rgba(36, 191, 174, 0.25);
+        }
+
+        /* Response displays */
+        .status-message {
+            margin-top: 1.5rem;
+            min-height: 24px;
+            font-weight: 600;
+            font-size: 1rem;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .status-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .status-message.error {
+            color: #e53e3e;
+        }
+
+        .status-message.success {
+            color: #38a169;
+        }
+
+        .balance-board {
+            margin-top: 1rem;
+            background: #fff;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-color);
+            display: none;
+            animation: fadeInBody 0.4s ease forwards;
+            transition: transform 0.2s ease;
+        }
+
+        .balance-board.active {
+            display: block;
+        }
+
+        @keyframes fadeInBody {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .currency-symbol {
+            color: var(--teal);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="simulator-container">
+        <h1>🏦 💰 Bank Account Simulator</h1>
+        
+        <div class="input-group">
+            <input type="number" id="accountInput" placeholder="Enter the Account" min="0" step="0.01">
+        </div>
+
+        <div class="button-group">
+            <button onclick="handleTransaction('deposit')">Deposit 😔</button>
+            <button onclick="handleTransaction('withdraw')">Withdraw 🤩</button>
+            <button onclick="checkBalance()">Check Balance 💸</button>
+        </div>
+
+        <div id="statusMessage" class="status-message"></div>
+        <div id="balanceBoard" class="balance-board">
+            Current Balance: <span class="currency-symbol">$</span><span id="balanceValue">0.00</span>
+        </div>
+    </div>
+
+    <script>
+        let currentBalance = 0;
+        const inputEl = document.getElementById('accountInput');
+        const statusMsg = document.getElementById('statusMessage');
+        const balanceBoard = document.getElementById('balanceBoard');
+        const balanceValue = document.getElementById('balanceValue');
+
+        function displayMessage(msg, isError) {
+            statusMsg.textContent = msg;
+            statusMsg.className = 'status-message show ' + (isError ? 'error' : 'success');
+            setTimeout(() => {
+                statusMsg.classList.remove('show');
+            }, 3000);
+        }
+
+        function getAmount() {
+            const val = parseFloat(inputEl.value);
+            if (isNaN(val) || val <= 0) {
+                displayMessage('Please enter a valid amount.', true);
+                return null;
+            }
+            return val;
+        }
+
+        function handleTransaction(type) {
+            const amount = getAmount();
+            if (amount === null) return;
+
+            if (type === 'withdraw') {
+                if (amount > currentBalance) {
+                    displayMessage('Insufficient funds!', true);
+                    return;
+                }
+                currentBalance -= amount;
+                displayMessage(`Successfully withdrew $${amount.toFixed(2)}`, false);
+            } else {
+                currentBalance += amount;
+                displayMessage(`Successfully deposited $${amount.toFixed(2)}`, false);
+            }
+
+            inputEl.value = '';
+            
+            if (balanceBoard.classList.contains('active')) {
+                updateBalanceDisplay();
+            }
+        }
+
+        function updateBalanceDisplay() {
+            balanceValue.textContent = currentBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            
+            balanceBoard.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                balanceBoard.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        let balanceTimeout;
+
+        function checkBalance() {
+            updateBalanceDisplay();
+            balanceBoard.classList.add('active');
+            
+            // Automatically hide the balance after 3 seconds
+            clearTimeout(balanceTimeout);
+            balanceTimeout = setTimeout(() => {
+                balanceBoard.classList.remove('active');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
